@@ -1,3 +1,7 @@
-# 容器化学习示例
+# docker&k8s学习记录
 - docker
-- k8s
+  - 安装教程
+  - 常用示例
+- kubernetes
+  - 安装教程
+  - 常用示例

@@ -3,7 +3,7 @@
 docker run \
       --name nginx \
       -d \
-      -p 9011:80 \
+      -p 80:80 \
       -v ~/data/docker/nginx:/home \
       nginx
 ```
