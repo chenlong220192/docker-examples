@@ -4,7 +4,7 @@ docker run \
       -d \
       -it \
       -p 9002:9000 \
-      -v ~/data/docker/sonarqube/:/opt/sonarqube/ \
+      -v /data/docker/sonarqube/:/opt/sonarqube/ \
       --name sonarqube \
       sonarqube
 ```
@@ -15,7 +15,7 @@ docker run \
       -d \
       -it \
       -p 9003:9000 \
-      -v ~/data/docker/sonarqube-7_8-community/:/opt/sonarqube/ \
+      -v /data/docker/sonarqube-7_8-community/:/opt/sonarqube/ \
       --name sonarqube-7_8-community \
       sonarqube:7.8-community
 ```
@@ -25,4 +25,4 @@ docker run \
 - 默认账号密码：`admin/admin`
 - 切换数据库可以在`conf/sonar.properties`文件配置
 - ⚠️注意：需要提前将以上目录拷贝到本地
-  - 例：`docker cp sonarqube:/opt/sonarqube ~/data/docker/sonarqube`
+  - 例：`docker cp sonarqube:/opt/sonarqube /data/docker/sonarqube`

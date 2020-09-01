@@ -22,7 +22,7 @@ services:
     ports:
       - 9200:3306
     volumes:
-      - ~/data/docker/ghost/mysql:/var/lib/mysql
+      - /data/docker/ghost/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: chenlong
       MYSQL_DATABASE: ghost
