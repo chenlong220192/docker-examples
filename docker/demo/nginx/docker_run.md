@@ -1,10 +1,14 @@
 - docker run
 ```
 docker run \
-      --name nginx \
       -d \
       -p 9011:80 \
       -v /data/docker/nginx:/home \
+      --memory 64m \
+      --memory-swappiness 0 \
+      --memory-reservation 64m \
+      --oom-kill-disable=false \
+      --name nginx \
       nginx
 ```
 
