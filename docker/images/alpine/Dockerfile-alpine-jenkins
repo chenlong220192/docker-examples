@@ -1,0 +1,70 @@
+# 1、基础镜像
+FROM alpine-jdk8:8u261
+
+# 2、镜像作者和电子邮箱
+MAINTAINER chenlong "chenlong220192@gmail.com"
+
+# 3、安装基础工具
+RUN apk add --no-cache \
+    bash \
+    coreutils \
+    curl \
+    git \
+    git-lfs \
+    openssh-client \
+    tini \
+    ttf-dejavu \
+    tzdata \
+    unzip \
+    busybox-extras
+
+# 4、构建参数
+ARG user=root
+ARG http_port=8080
+ARG agent_port=50000
+ARG JENKINS_HOME=/var/jenkins_home
+ARG REF=/usr/share/jenkins/ref
+ARG JENKINS_VERSION=2.255
+# 消息摘要校验，暂时忽略。
+
+# 5、环境变量
+ENV JENKINS_HOME $JENKINS_HOME
+ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
+ENV REF $REF
+ENV JENKINS_VERSION ${JENKINS_VERSION}
+ENV JENKINS_UC https://updates.jenkins.io
+ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
+ENV JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals
+ENV COPY_REFERENCE_FILE_LOG $JENKINS_HOME/copy_reference_file.log
+
+# 6、目录初始化
+RUN mkdir -p $JENKINS_HOME && mkdir -p ${REF}/init.groovy.d
+
+# 7、jenkins
+RUN curl http://106.14.180.184:9011/jenkins/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war -o /usr/share/jenkins/jenkins.war \
+    && curl http://106.14.180.184:9011/jenkins/docker/jenkins-plugin-manager-2.0.0.jar -o /usr/lib/jenkins-plugin-manager.jar \
+    && curl http://106.14.180.184:9011/jenkins/docker/jenkins-support -o /usr/local/bin/jenkins-support \
+    && curl http://106.14.180.184:9011/jenkins/docker/jenkins.sh -o /usr/local/bin/jenkins.sh \
+    && curl http://106.14.180.184:9011/jenkins/docker/plugins.sh -o /usr/local/bin/plugins.sh \
+    && curl http://106.14.180.184:9011/jenkins/docker/install-plugins.sh -o /usr/local/bin/install-plugins.sh \
+    && curl http://106.14.180.184:9011/jenkins/docker/tini-shim.sh -o /bin/tini-shim \
+    && curl http://106.14.180.184:9011/jenkins/docker/jenkins-plugin-cli.sh -o /bin/jenkins-plugin-cli
+
+# 设置启动权限
+RUN chmod u+x /usr/local/bin/jenkins.sh
+
+# 8、匿名数据卷
+VOLUME $JENKINS_HOME
+
+# 9、端口声明
+EXPOSE ${http_port}
+EXPOSE ${agent_port}
+
+# 10、用户
+USER ${user}
+
+# 11、启动后执行
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
+
+# 构建命令
+#### docker build -f Dockerfile-alpine-jenkins --rm -t alpine-jenkins:2.255 .
